@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAUg5d6VpoJSJ1OWe_zYg8ER3kRBpQ9nFQ",
   authDomain: "chatroom-421223.firebaseapp.com",
   projectId: "chatroom-421223",
-  storageBucket: "chatroom-421223",
+  storageBucket: "chatroom-421223.appspot.com",
   messagingSenderId: "199486896569",
   appId: "1:199486896569:web:d04a624b5c4a469ddbde68",
   measurementId: "G-MMD690D7KC"
@@ -18,7 +18,7 @@ const db = getDatabase(app);
 async function writeUserData(userId, name, email, password) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt rounds of 10
-    set(ref(db, 'users/' + userId), {
+    await set(ref(db, 'users/' + userId), {
       username: name,
       email: email,
       password: hashedPassword
@@ -28,20 +28,35 @@ async function writeUserData(userId, name, email, password) {
   }
 }
 
-function readUserData(userId) {
+async function readUserData(userId, password) {
   const userRef = ref(db, 'users/' + userId);
-  get(userRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("User data:", snapshot.val());
+  try {
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      const isMatch = await bcrypt.compare(password, userData.password); // Compare the plaintext password with the hashed password
+      if (isMatch) {
+        console.log("Passwords match!");
+        return true;
       } else {
-        console.log("No data available");
+        console.log("Passwords do not match.");
+        return false;
       }
-    })
-    .catch((error) => {
-      console.error("Error reading data:", error);
-    });
+    } else {
+      console.log("No data available");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error reading data:", error);
+    return false;
+  }
 }
 
-// Call the function with sample values
+// Example usage
+(async () => {
+  const isValid = await readUserData("asd", "Asd");
+  console.log("Password valid:", isValid);
+})();
+
+// Export the functions for use in other files
 export { writeUserData, readUserData };

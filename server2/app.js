@@ -25,17 +25,35 @@ app.post('/form', async (req, res) => {
   try {
     
     const firebase = await import('../firebase.js');
-    
     const { username, email, password } = req.body;
-    // Call the Firebase registration function
+
+    if(!email){
+      try{
+        let result = await firebase.readUserData(username, password);
+        if(result){
+          res.redirect('/createRoom.html');
+        } else{
+          console.error("Error in user registration:", error);
+          res.status(500).send('Your Username or Password is incorrect.');
+        }
+        
+      } catch{
+        
+        res.status(500).send('Your Username or Password is incorrect.');
+      }
+      
+    }
+    if(email){
     await firebase.writeUserData(username, username, email, password);
     // Send a success response
     res.redirect('/createRoom.html');
-  } catch (error) {
-    console.error("Error in user registration:", error);
+    }
+  } catch  {
+    
     res.status(500).send('There was an error with the registration. Please try again later.');
   }
 });
+
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
