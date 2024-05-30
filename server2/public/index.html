@@ -1,51 +1,66 @@
-<!-- chat room log in page -->
-<!-- front end creation only -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Login Form</title>
+    <title>HTML Registration Form</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="main">
-        <h1>GeeksforGeeks</h1>
-        <h3>Enter your login credentials</h3>
-        <form id="loginForm" action="your-login-endpoint" method="POST">
+        <h1>Chatroom</h1>
+        <h3>Create an account</h3>
+        <form id="myForm" action="/form" method="post" >
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" placeholder="Enter your Username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your Email" required>
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Enter your Password" required>
 
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your Password" required>
+
             <div class="wrap">
-                <button type="submit">Submit</button>
+                <button type="submit">Register</button>
             </div>
         </form>
-        <p>Not registered? 
-            <a href="register.html" style="text-decoration: none;">Create an account</a>
+        <p>Already have an account? 
+            <a href="logInPage.html" style="text-decoration: none;">Login here</a>
         </p>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the default form submission
-
+            
             const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            // Regular expression to check for at least one uppercase letter
+            const hasUpperCase = /[A-Z]/.test(password);
 
             // Simple validation example
-            if (username && password) {
-                console.log('Login Successful');
-                alert('Login Successful');
-                // Redirect to chatpage.html
-                window.location.href = 'chatpage.html';
+            if (username && email && password && confirmPassword) {
+                if (password === confirmPassword) {
+                    if (hasUpperCase) {
+                        console.log('Registration Successful');
+                        alert('Registration Successful');
+                        // You can make an AJAX request here if needed
+                    } else {
+                        alert('Password must contain at least one uppercase letter.');
+                    }
+                } else {
+                    alert('Passwords do not match.');
+                }
             } else {
-                alert('Please enter both username and password.');
+                alert('Please fill in all fields.');
             }
         });
     </script>
