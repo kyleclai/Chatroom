@@ -1,5 +1,5 @@
 
-/*
+
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get } from "firebase/database";
 import bcrypt from 'bcrypt';
@@ -48,4 +48,4 @@ function readUserData(userId) {
 
 // Call the function with sample values
 export { writeUserData, readUserData };
-*/
+
