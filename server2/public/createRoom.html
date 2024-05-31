@@ -49,6 +49,19 @@
     </div>
 
     <script>
+        // Function to get URL parameters
+        function getParameterByName(name) {
+            const url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        const username = getParameterByName('username');
+
         // Chatroom management logic
         document.getElementById('createChatroomBtn').addEventListener('click', function() {
             document.getElementById('chatroomSection').style.display = 'none';
@@ -68,7 +81,7 @@
             // Simulate a server request
             localStorage.setItem('chatroom_' + chatroomName, JSON.stringify({ password: chatroomPassword }));
             alert('Chatroom Created Successfully');
-            window.location.href = 'chatpage.html?name=' + chatroomName;
+            window.location.href = `./webpack-demo/dist/index.html?username=${username}&chatroom=${chatroomName}`;
         });
 
         document.getElementById('joinChatroomForm').addEventListener('submit', function(event) {
@@ -81,7 +94,7 @@
                 const chatroom = JSON.parse(storedChatroom);
                 if (chatroom.password === chatroomPassword) {
                     alert('Joined Chatroom Successfully');
-                    window.location.href = 'chatpage.html?name=' + chatroomName;
+                    window.location.href = `./webpack-demo/dist/index.html?username=${username}&chatroom=${chatroomName}`;
                 } else {
                     alert('Incorrect Chatroom Password');
                 }

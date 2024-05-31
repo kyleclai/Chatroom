@@ -15,7 +15,7 @@
     <div class="main">
         <h1>Chatroom</h1>
         <h3>Enter your login credentials</h3>
-        <form id="loginForm" action="your-login-endpoint" method="POST">
+        <form id="myForm" action="/form" method="post" >
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" placeholder="Enter your Username" required>
 
@@ -31,24 +31,6 @@
         </p>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Simple validation example
-            if (username && password) {
-                console.log('Login Successful');
-                alert('Login Successful');
-                // Redirect to chatpage.html
-                window.location.href = 'chatpage.html';
-            } else {
-                alert('Please enter both username and password.');
-            }
-        });
-    </script>
-</body>
+    
 
 </html>
