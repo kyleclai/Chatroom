@@ -17,7 +17,9 @@ const db = getDatabase(app);
 
 async function writeUserData(chatroom, name, timestamp, message) {
   try {
-    set(ref(db, 'chatroom/' + chatroom), {
+    let time= getTimeForDataBase(timestamp)
+    let timeName= time+name
+    set(ref(db, 'chatroom/' + timeName), {
       name: name,
       timestamp: timestamp,
       message: message
@@ -27,21 +29,24 @@ async function writeUserData(chatroom, name, timestamp, message) {
   }
 }
 
-async function readUserData(chatroom) {
+function readUserData(chatroom) {
   const userRef = ref(db, 'chatroom/' + chatroom);
-  get(userRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("User data:", snapshot.val());
-        return snapshot;
-      } else {
-        console.log("No data available");
-      }
-    })
-    .catch((error) => {
-      console.error("Error reading data:", error);
-    });
-    
+  
+  // Return a promise
+  return get(userRef)
+      .then((snapshot) => {
+          if (snapshot.exists()) {
+              console.log("User data:", snapshot.val());
+              return snapshot.val();
+          } else {
+              console.log("No data available");
+              return {}; // Return an empty object if no data
+          }
+      })
+      .catch((error) => {
+          console.error("Error reading data:", error);
+          return {}; // Return an empty object on error
+      });
 }
 
 function getParametersFromURL() {
@@ -54,31 +59,71 @@ function getParametersFromURL() {
 
 const { username, chatroom } = getParametersFromURL();
 
-function sendMessage2() {
+async function sendMessage2() {
   var messageInput = document.getElementById('messageInput');
   var message = messageInput.value.trim();
   if (message !== '') {
     var timestamp = new Date().toISOString();
-    displayMessage(username, message, timestamp);
+    await displayMessage2(username, message, timestamp);
     // username +timestamp or somethin
+    
     messageInput.value = '';
     writeUserData(chatroom, username, timestamp, message);
   }
 }
 
- async function displayMessage(sender, message, timestamp) {
-    console.log("here maybe?")
-    let data =  await readUserData("").val();
-    console.log(data);
-    console.log("do i get a console")
-      
+async function displayMessage2(sender, message, timestamp) {
+    var messagesContainer = document.getElementById('messages');
+    var messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.innerHTML = `<span class="sender">${sender}:</span> ${message} <span class="timestamp"> - ${getCurrentTime(timestamp)}</span>`;
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
+async function displayMessage(sender, message, timestamp) {
+  console.log("Fetching messages...");
+  let data = await readUserData("");
+
+  if (data) {
+      console.log("Messages data:", data);
       var messagesContainer = document.getElementById('messages');
-      var messageElement = document.createElement('div');
-      messageElement.classList.add('message');
-      messageElement.innerHTML = `<span class="sender">${sender}:</span> ${message} <span class="timestamp"> - ${getCurrentTime(timestamp)}</span>`;
-      messagesContainer.appendChild(messageElement);
+
+      // Clear previous messages
+      messagesContainer.innerHTML = '';
+
+      // Convert object to array and sort messages by timestamp
+      const messagesArray = Object.values(data).sort((a, b) => {
+          return new Date(a.timestamp) - new Date(b.timestamp);
+      });
+
+      // Append sorted messages to messagesContainer
+      messagesArray.forEach(({ name, message, timestamp }) => {
+          var messageElement = document.createElement('div');
+          messageElement.classList.add('message');
+          messageElement.innerHTML = `<span class="sender">${name}:</span> ${message} <span class="timestamp"> - ${getCurrentTime(timestamp)}</span>`;
+          messagesContainer.appendChild(messageElement);
+      });
+
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  } else {
+      console.log("No data found");
+  }
+}
+
+
+function getTimeForDataBase(timestamp) {
+  var now = new Date(timestamp);
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+  var timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+  return timeString;
 }
 
 
@@ -94,6 +139,11 @@ function getCurrentTime(timestamp) {
   return timeString;
 }
 
+
+window.onload = () => {
+  displayMessage();
+  setInterval(displayMessage, 15000); // Refresh messages every 15 seconds
+};
 // Attach functions to the window object
 window.sendMessage2 = sendMessage2;
 window.displayMessage = displayMessage;
