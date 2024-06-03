@@ -1,17 +1,15 @@
-
-
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get } from "firebase/database";
 import bcrypt from 'bcrypt';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAUg5d6VpoJSJ1OWe_zYg8ER3kRBpQ9nFQ",
-  authDomain: "chatroom-421223.firebaseapp.com",
-  projectId: "chatroom-421223",
-  storageBucket: "chatroom-421223",
-  messagingSenderId: "199486896569",
-  appId: "1:199486896569:web:d04a624b5c4a469ddbde68",
-  measurementId: "G-MMD690D7KC"
+  apiKey: "AIzaSyDna4KthRd3VQwbofp7zpaGQhYsDDrlO5Y",
+  authDomain: "chatroom-css360.firebaseapp.com",
+  projectId: "chatroom-css360",
+  storageBucket: "chatroom-css360.appspot.com",
+  messagingSenderId: "422918245255",
+  appId: "1:422918245255:web:b8be0a398436288a006122",
+  measurementId: "G-ESL8YMMNX3",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -49,3 +47,5 @@ function readUserData(userId) {
 // Call the function with sample values
 export { writeUserData, readUserData };
 
+writeUserData("123123","alice","a@gmail.com","123");
+  readUserData("123123");

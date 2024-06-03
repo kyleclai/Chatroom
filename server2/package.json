@@ -13,7 +13,8 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
-    "openssl": "^2.0.0"
+    "openssl": "^2.0.0",
+    "webpack": "^5.91.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1"

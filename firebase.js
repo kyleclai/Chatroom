@@ -1,15 +1,15 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get } from "firebase/database";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAUg5d6VpoJSJ1OWe_zYg8ER3kRBpQ9nFQ",
-  authDomain: "chatroom-421223.firebaseapp.com",
-  projectId: "chatroom-421223",
-  storageBucket: "chatroom-421223.appspot.com",
-  messagingSenderId: "199486896569",
-  appId: "1:199486896569:web:d04a624b5c4a469ddbde68",
-  measurementId: "G-MMD690D7KC"
+  apiKey: "AIzaSyDna4KthRd3VQwbofp7zpaGQhYsDDrlO5Y",
+  authDomain: "chatroom-css360.firebaseapp.com",
+  projectId: "chatroom-css360",
+  storageBucket: "chatroom-css360.appspot.com",
+  messagingSenderId: "422918245255",
+  appId: "1:422918245255:web:b8be0a398436288a006122",
+  measurementId: "G-ESL8YMMNX3",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -18,10 +18,10 @@ const db = getDatabase(app);
 async function writeUserData(userId, name, email, password) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt rounds of 10
-    await set(ref(db, 'users/' + userId), {
+    await set(ref(db, "users/" + userId), {
       username: name,
       email: email,
-      password: hashedPassword
+      password: hashedPassword,
     });
   } catch (error) {
     console.error("Error hashing password:", error);
@@ -29,7 +29,7 @@ async function writeUserData(userId, name, email, password) {
 }
 
 async function readUserData(userId, password) {
-  const userRef = ref(db, 'users/' + userId);
+  const userRef = ref(db, "users/" + userId);
   try {
     const snapshot = await get(userRef);
     if (snapshot.exists()) {
